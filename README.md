@@ -74,61 +74,61 @@ Let's look at the C implementation of those inner loops.
 This is from `numpy/core/include/numpy/__umath_generated.c` (the lines have
 been reformattd for clarity and some comments have been added):
 
-    ```c
-    static PyUFuncGenericFunction add_functions[] = {
-        // bool type
-        BOOL_add,
+```c
+static PyUFuncGenericFunction add_functions[] = {
+    // bool type
+    BOOL_add,
 
-        // integer types, signed and unsigned
-        BYTE_add, UBYTE_add, SHORT_add, USHORT_add, INT_add, UINT_add,
-        LONG_add, ULONG_add, LONGLONG_add, ULONGLONG_add,
+    // integer types, signed and unsigned
+    BYTE_add, UBYTE_add, SHORT_add, USHORT_add, INT_add, UINT_add,
+    LONG_add, ULONG_add, LONGLONG_add, ULONGLONG_add,
 
-        // floating point types
-        HALF_add,   FLOAT_add,  DOUBLE_add, LONGDOUBLE_add,
+    // floating point types
+    HALF_add,   FLOAT_add,  DOUBLE_add, LONGDOUBLE_add,
 
-        // complex types
-        CFLOAT_add, CDOUBLE_add, CLONGDOUBLE_add,
+    // complex types
+    CFLOAT_add, CDOUBLE_add, CLONGDOUBLE_add,
 
-        // datetime types
-        DATETIME_Mm_M_add, TIMEDELTA_mm_m_add, DATETIME_mM_M_add,
+    // datetime types
+    DATETIME_Mm_M_add, TIMEDELTA_mm_m_add, DATETIME_mM_M_add,
 
-        // object type (Why NULL? We'll get back to that.)
-        NULL
-    };
+    // object type (Why NULL? We'll get back to that.)
+    NULL
+};
 
-    static void * add_data[] = {
-        (void *)NULL, (void *)NULL, (void *)NULL, (void *)NULL, (void *)NULL,
-        (void *)NULL, (void *)NULL, (void *)NULL, (void *)NULL, (void *)NULL,
-        (void *)NULL, (void *)NULL, (void *)NULL, (void *)NULL, (void *)NULL,
-        (void *)NULL, (void *)NULL, (void *)NULL, (void *)NULL, (void *)NULL,
-        (void *)NULL, (void *)NULL
-    };
+static void * add_data[] = {
+    (void *)NULL, (void *)NULL, (void *)NULL, (void *)NULL, (void *)NULL,
+    (void *)NULL, (void *)NULL, (void *)NULL, (void *)NULL, (void *)NULL,
+    (void *)NULL, (void *)NULL, (void *)NULL, (void *)NULL, (void *)NULL,
+    (void *)NULL, (void *)NULL, (void *)NULL, (void *)NULL, (void *)NULL,
+    (void *)NULL, (void *)NULL
+};
 
-    static char add_signatures[] = {
-        NPY_BOOL,          NPY_BOOL,           NPY_BOOL,
-        NPY_BYTE,          NPY_BYTE,           NPY_BYTE,
-        NPY_UBYTE,         NPY_UBYTE,          NPY_UBYTE,
-        NPY_SHORT,         NPY_SHORT,          NPY_SHORT,
-        NPY_USHORT,        NPY_USHORT,         NPY_USHORT,
-        NPY_INT,           NPY_INT,            NPY_INT,
-        NPY_UINT,          NPY_UINT,           NPY_UINT,
-        NPY_LONG,          NPY_LONG,           NPY_LONG,
-        NPY_ULONG,         NPY_ULONG,          NPY_ULONG,
-        NPY_LONGLONG,      NPY_LONGLONG,       NPY_LONGLONG,
-        NPY_ULONGLONG,     NPY_ULONGLONG,      NPY_ULONGLONG,
-        NPY_HALF,          NPY_HALF,           NPY_HALF,
-        NPY_FLOAT,         NPY_FLOAT,          NPY_FLOAT,
-        NPY_DOUBLE,        NPY_DOUBLE,         NPY_DOUBLE,
-        NPY_LONGDOUBLE,    NPY_LONGDOUBLE,     NPY_LONGDOUBLE,
-        NPY_CFLOAT,        NPY_CFLOAT,         NPY_CFLOAT,
-        NPY_CDOUBLE,       NPY_CDOUBLE,        NPY_CDOUBLE,
-        NPY_CLONGDOUBLE,   NPY_CLONGDOUBLE,    NPY_CLONGDOUBLE,
-        NPY_DATETIME,      NPY_TIMEDELTA,      NPY_DATETIME,
-        NPY_TIMEDELTA,     NPY_TIMEDELTA,      NPY_TIMEDELTA,
-        NPY_TIMEDELTA,     NPY_DATETIME,       NPY_DATETIME,
-        NPY_OBJECT,        NPY_OBJECT,         NPY_OBJECT
-    };
-    ```
+static char add_signatures[] = {
+    NPY_BOOL,          NPY_BOOL,           NPY_BOOL,
+    NPY_BYTE,          NPY_BYTE,           NPY_BYTE,
+    NPY_UBYTE,         NPY_UBYTE,          NPY_UBYTE,
+    NPY_SHORT,         NPY_SHORT,          NPY_SHORT,
+    NPY_USHORT,        NPY_USHORT,         NPY_USHORT,
+    NPY_INT,           NPY_INT,            NPY_INT,
+    NPY_UINT,          NPY_UINT,           NPY_UINT,
+    NPY_LONG,          NPY_LONG,           NPY_LONG,
+    NPY_ULONG,         NPY_ULONG,          NPY_ULONG,
+    NPY_LONGLONG,      NPY_LONGLONG,       NPY_LONGLONG,
+    NPY_ULONGLONG,     NPY_ULONGLONG,      NPY_ULONGLONG,
+    NPY_HALF,          NPY_HALF,           NPY_HALF,
+    NPY_FLOAT,         NPY_FLOAT,          NPY_FLOAT,
+    NPY_DOUBLE,        NPY_DOUBLE,         NPY_DOUBLE,
+    NPY_LONGDOUBLE,    NPY_LONGDOUBLE,     NPY_LONGDOUBLE,
+    NPY_CFLOAT,        NPY_CFLOAT,         NPY_CFLOAT,
+    NPY_CDOUBLE,       NPY_CDOUBLE,        NPY_CDOUBLE,
+    NPY_CLONGDOUBLE,   NPY_CLONGDOUBLE,    NPY_CLONGDOUBLE,
+    NPY_DATETIME,      NPY_TIMEDELTA,      NPY_DATETIME,
+    NPY_TIMEDELTA,     NPY_TIMEDELTA,      NPY_TIMEDELTA,
+    NPY_TIMEDELTA,     NPY_DATETIME,       NPY_DATETIME,
+    NPY_OBJECT,        NPY_OBJECT,         NPY_OBJECT
+};
+```
 
 The first array shown, `add_functions`, is the array of "inner loop" functions.
 The functions correspond to the short signatures in `numpy.add.types`.
