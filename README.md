@@ -78,7 +78,7 @@ been reformattd for clarity and some comments have been added):
         // bool type
         BOOL_add,
 
-        // integer types, signed and unsigbed
+        // integer types, signed and unsigned
         BYTE_add, UBYTE_add, SHORT_add, USHORT_add, INT_add, UINT_add,
         LONG_add, ULONG_add, LONGLONG_add, ULONGLONG_add,
 
