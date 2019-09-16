@@ -144,42 +144,44 @@ The array `add_functions` is not necessarily the final version.  Some of those
 functions might be replaced by implementation that take advantage of SIMD
 instructions.  Further down in the file `__umath_generated.c`, we have
 
-    static int
-    InitOperators(PyObject *dictionary) {
-        PyObject *f, *identity;
-        
-        _ones_like_functions[20] = PyUFunc_O_O;
-        _ones_like_data[20] = (void *) Py_get_one;
-        absolute_functions[19] = PyUFunc_O_O;
-        absolute_data[19] = (void *) PyNumber_Absolute;
-        #ifdef HAVE_ATTRIBUTE_TARGET_AVX2
-        if (npy_cpu_supports("avx2")) {
-            add_functions[1] = BYTE_add_avx2;
-        }
-        #endif
-        
-        #ifdef HAVE_ATTRIBUTE_TARGET_AVX2
-        if (npy_cpu_supports("avx2")) {
-            add_functions[2] = UBYTE_add_avx2;
-        }
-        #endif
-        
-        #ifdef HAVE_ATTRIBUTE_TARGET_AVX2
-        if (npy_cpu_supports("avx2")) {
-            add_functions[3] = SHORT_add_avx2;
-        }
-        #endif
-        
-        [...]
-        
-        #ifdef HAVE_ATTRIBUTE_TARGET_AVX2
-        if (npy_cpu_supports("avx2")) {
-            add_functions[10] = ULONGLONG_add_avx2;
-        }
-        #endif
-        
-        add_functions[21] = PyUFunc_OO_O;
-        add_data[21] = (void *) PyNumber_Add;
+```c
+static int
+InitOperators(PyObject *dictionary) {
+    PyObject *f, *identity;
+    
+    _ones_like_functions[20] = PyUFunc_O_O;
+    _ones_like_data[20] = (void *) Py_get_one;
+    absolute_functions[19] = PyUFunc_O_O;
+    absolute_data[19] = (void *) PyNumber_Absolute;
+    #ifdef HAVE_ATTRIBUTE_TARGET_AVX2
+    if (npy_cpu_supports("avx2")) {
+        add_functions[1] = BYTE_add_avx2;
+    }
+    #endif
+    
+    #ifdef HAVE_ATTRIBUTE_TARGET_AVX2
+    if (npy_cpu_supports("avx2")) {
+        add_functions[2] = UBYTE_add_avx2;
+    }
+    #endif
+    
+    #ifdef HAVE_ATTRIBUTE_TARGET_AVX2
+    if (npy_cpu_supports("avx2")) {
+        add_functions[3] = SHORT_add_avx2;
+    }
+    #endif
+    
+    [...]
+    
+    #ifdef HAVE_ATTRIBUTE_TARGET_AVX2
+    if (npy_cpu_supports("avx2")) {
+        add_functions[10] = ULONGLONG_add_avx2;
+    }
+    #endif
+    
+    add_functions[21] = PyUFunc_OO_O;
+    add_data[21] = (void *) PyNumber_Add;
+```
 
 So it is possible the some of the inner loop functions for the `add` ufunc
 will use SIMD instructions.
@@ -193,21 +195,23 @@ Let's look at one of the (non-SIMD) inner loop functions.  The generated
 source code is in `numpy/core/src/umath/loops.c`.  Here is `UINT_add` from
 that file:
 
-    #if 1
-    NPY_NO_EXPORT NPY_GCC_OPT_3  void
-    UINT_add(char **args, npy_intp *dimensions, npy_intp *steps, void *NPY_UNUSED(func))
-    {
-        if (IS_BINARY_REDUCE) {
-            BINARY_REDUCE_LOOP(npy_uint) {
-                io1 += *(npy_uint *)ip2;
-            }
-            *((npy_uint *)iop1) = io1;
+```c
+#if 1
+NPY_NO_EXPORT NPY_GCC_OPT_3  void
+UINT_add(char **args, npy_intp *dimensions, npy_intp *steps, void *NPY_UNUSED(func))
+{
+    if (IS_BINARY_REDUCE) {
+        BINARY_REDUCE_LOOP(npy_uint) {
+            io1 += *(npy_uint *)ip2;
         }
-        else {
-            BINARY_LOOP_FAST(npy_uint, npy_uint, *out = in1 + in2);
-        }
+        *((npy_uint *)iop1) = io1;
     }
-    #endif
+    else {
+        BINARY_LOOP_FAST(npy_uint, npy_uint, *out = in1 + in2);
+    }
+}
+#endif
+```
 
 To make sense of that function, it will probably help to review the description
 of the inner loop functions.  This is such a function, but the C loop code--which
@@ -215,21 +219,23 @@ is mostly boilerplate--is hidden inside a few macros.
 
 For completeness, here's the definition of `UINT_add_avx2`, also from `loops.c`:
 
-    #if HAVE_ATTRIBUTE_TARGET_AVX2
-    NPY_NO_EXPORT NPY_GCC_OPT_3 NPY_GCC_TARGET_AVX2 void
-    UINT_add_avx2(char **args, npy_intp *dimensions, npy_intp *steps, void *NPY_UNUSED(func))
-    {
-        if (IS_BINARY_REDUCE) {
-            BINARY_REDUCE_LOOP(npy_uint) {
-                io1 += *(npy_uint *)ip2;
-            }
-            *((npy_uint *)iop1) = io1;
+```c
+#if HAVE_ATTRIBUTE_TARGET_AVX2
+NPY_NO_EXPORT NPY_GCC_OPT_3 NPY_GCC_TARGET_AVX2 void
+UINT_add_avx2(char **args, npy_intp *dimensions, npy_intp *steps, void *NPY_UNUSED(func))
+{
+    if (IS_BINARY_REDUCE) {
+        BINARY_REDUCE_LOOP(npy_uint) {
+            io1 += *(npy_uint *)ip2;
         }
-        else {
-            BINARY_LOOP_FAST(npy_uint, npy_uint, *out = in1 + in2);
-        }
+        *((npy_uint *)iop1) = io1;
     }
-    #endif
+    else {
+        BINARY_LOOP_FAST(npy_uint, npy_uint, *out = in1 + in2);
+    }
+}
+#endif
+```
 
 The only difference is the addition of the macro `NPY_GCC_TARGET_AVX2`
 to the qualifiers of the function definition.
