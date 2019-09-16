@@ -74,6 +74,7 @@ Let's look at the C implementation of those inner loops.
 This is from `numpy/core/include/numpy/__umath_generated.c` (the lines have
 been reformattd for clarity and some comments have been added):
 
+    ```c
     static PyUFuncGenericFunction add_functions[] = {
         // bool type
         BOOL_add,
@@ -127,6 +128,7 @@ been reformattd for clarity and some comments have been added):
         NPY_TIMEDELTA,     NPY_DATETIME,       NPY_DATETIME,
         NPY_OBJECT,        NPY_OBJECT,         NPY_OBJECT
     };
+    ```
 
 The first array shown, `add_functions`, is the array of "inner loop" functions.
 The functions correspond to the short signatures in `numpy.add.types`.
