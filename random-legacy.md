@@ -3,9 +3,9 @@ Some notes on the change of the integer type in 1.17 random generator code
 
 The new Generator class implemented in 1.17 uses int64_t for C integers.
 The legacy RandomState class uses C long integers, which are typically either
-32 or 64 bits, depending on the platorm or compiler.
+32 or 64 bits, depending on the platform or compiler.
 
-The implementations of the distributions in the new code reuses much of the
+The implementations of the distributions in the new code reuse much of the
 old code.  To make this work, the macro RAND_INT_TYPE specifies the integer
 type.  When the legacy code in `mtrand.pyx` is compiled, RAND_INT_TYPE is
 `long`.  When it is compiled for the new Generator, RAND_INT_TYPE is `int64_t`.
