@@ -262,7 +262,7 @@ static char hypot_signatures[] = {
 ```
 
 The array `hypot_functions` is initialized with all NULL values.  The values
-are filled in later, in the function `InitOperatos`:
+are filled in later, in the function `InitOperators`:
 
 ```c
     hypot_functions[0] = PyUFunc_ee_e_As_ff_f;
@@ -302,7 +302,7 @@ PyUFunc_dd_d(char **args, npy_intp *dimensions, npy_intp *steps, void *func)
 ```
 
 Note that the fourth argument is `func`.  In the body of the function, this
-is cast to `f`, which has the type `doubleBinaryFunc` (a declaration of a
+is cast to `f`, which has the type `doubleBinaryFunc` (a declaration of a C
 function that accepts two double precision inputs and returns a double
 precision value).  In the loop, the output vaues are computed by applying
 `f` to the input values.
@@ -311,12 +311,12 @@ When one of the ufunc inner loop functions is called, it is passed the
 corresponding value from the ufunc `data` array as the fourth argument.
 For these generic inner loop functions, the `data` array holds pointers
 to the functions that actually do the scalar computation.  That's why
-the third slot of `hypot_data` is set to `npy_hypt`.  `npy_hypot` is
+the third slot of `hypot_data` is set to `npy_hypot`.  `npy_hypot` is
 the C function that does the scalar computation.
 
 The actual instance of the ufunc object for `hypot` is created further
-down in `InitOperators` (I cut out all but the first few lines of the
-docstring):
+down in `InitOperators` (for brevity, most of the docstring is not
+shown):
 
 ```c
     identity = PyInt_FromLong(0);
@@ -326,7 +326,7 @@ docstring):
     f = PyUFunc_FromFuncAndDataAndSignatureAndIdentity(
         hypot_functions, hypot_data, hypot_signatures, 5,
         2, 1, PyUFunc_IdentityValue, "hypot",
-        "Given the \"legs\" of a right triangle, [etc.]", 0, NULL, identity
+        "Given the \"legs\" of a right triangle, [...]", 0, NULL, identity
     );
     if (1) {
         Py_DECREF(identity);
@@ -344,8 +344,8 @@ docstring):
 ```
 
 That is where the ufunc object is created with a call to the NumPy C API
-function `PyUFunc_FromFuncAndDataAndSignatureAndIdentity`.  The object
-is stored in `dictionary` with the key `"hypot"`.
+function [`PyUFunc_FromFuncAndDataAndSignatureAndIdentity`](https://numpy.org/devdocs/reference/c-api/ufunc.html#c.PyUFunc_FromFuncAndDataAndSignatureAndIdentity).
+The object is stored in `dictionary` with the key `"hypot"`.
 
 *To be answered:*
 
