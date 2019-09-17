@@ -24,6 +24,10 @@ This scripts for generating NumPy's ufuncs are in
 
     numpy/numpy/core/code_generators
 
+
+Example: `add` implemented with a custom C function for each data type
+----------------------------------------------------------------------
+
 The `add` ufunc implements 22 inner loops.  This fact can be determined from
 the public Python API by inspecting the `types` attribute of the ufunc:
 
@@ -226,5 +230,150 @@ UINT_add_avx2(char **args, npy_intp *dimensions, npy_intp *steps, void *NPY_UNUS
 
 The only difference is the addition of the macro `NPY_GCC_TARGET_AVX2`
 to the qualifiers of the function definition.
+
+
+Example: `hypot` implemented with "generic" inner loop functions
+----------------------------------------------------------------
+
+The ufunc `hypot` has just five loop functions defined:
+
+```
+In [1]: import numpy as np
+In [2]: np.hypot.types
+Out[2]: ['ee->e', 'ff->f', 'dd->d', 'gg->g', 'OO->O']
+```
+
+Here are the relevant declarations from the generated C file `__umath_generated.c`:
+
+```c
+static PyUFuncGenericFunction hypot_functions[] = {NULL, NULL, NULL, NULL, NULL};
+
+static void * hypot_data[] = {
+    (void *)NULL, (void *)NULL, (void *)NULL, (void *)NULL, (void *)"hypot"
+};
+
+static char hypot_signatures[] = {
+    NPY_HALF,       NPY_HALF,       NPY_HALF,
+    NPY_FLOAT,      NPY_FLOAT,      NPY_FLOAT,
+    NPY_DOUBLE,     NPY_DOUBLE,     NPY_DOUBLE,
+    NPY_LONGDOUBLE, NPY_LONGDOUBLE, NPY_LONGDOUBLE,
+    NPY_OBJECT,     NPY_OBJECT,     NPY_OBJECT
+};
+```
+
+The array `hypot_functions` is initialized with all NULL values.  The values
+are filled in later, in the function `InitOperatos`:
+
+```c
+    hypot_functions[0] = PyUFunc_ee_e_As_ff_f;
+    hypot_data[0] = (void *) npy_hypotf;
+
+    hypot_functions[1] = PyUFunc_ff_f;
+    hypot_data[1] = (void *) npy_hypotf;
+
+    hypot_functions[2] = PyUFunc_dd_d;
+    hypot_data[2] = (void *) npy_hypot;
+
+    hypot_functions[3] = PyUFunc_gg_g;
+    hypot_data[3] = (void *) npy_hypotl;
+
+    hypot_functions[4] = PyUFunc_OO_O_method;
+```
+
+The functions with names like `PyUFunc_ee_e_As_ff_f` and `PyUFunc_dd_d` are
+*generic* inner loop functions.  For example, `PyUFunc_dd_d` is an inner
+loop for a function that takes two double precision inputs and a single
+double precision output.
+
+Here is the definition of `PyUFunc_dd_d` from `numpy/core/src/umath/loops.c.src`:
+
+```c
+/*UFUNC_API*/
+NPY_NO_EXPORT void
+PyUFunc_dd_d(char **args, npy_intp *dimensions, npy_intp *steps, void *func)
+{
+    doubleBinaryFunc *f = (doubleBinaryFunc *)func;
+    BINARY_LOOP {
+        double in1 = *(double *)ip1;
+        double in2 = *(double *)ip2;
+        *(double *)op1 = f(in1, in2);
+    }
+}
+```
+
+Note that the fourth argument is `func`.  In the body of the function, this
+is cast to `f`, which has the type `doubleBinaryFunc` (a declaration of a
+function that accepts two double precision inputs and returns a double
+precision value).  In the loop, the output vaues are computed by applying
+`f` to the input values.
+
+When one of the ufunc inner loop functions is called, it is passed the
+corresponding value from the ufunc `data` array as the fourth argument.
+For these generic inner loop functions, the `data` array holds pointers
+to the functions that actually do the scalar computation.  That's why
+the third slot of `hypot_data` is set to `npy_hypt`.  `npy_hypot` is
+the C function that does the scalar computation.
+
+The actual instance of the ufunc object for `hypot` is created further
+down in `InitOperators` (I cut out all but the first few lines of the
+docstring):
+
+```c
+    identity = PyInt_FromLong(0);
+    if (1 && identity == NULL) {
+        return -1;
+    }
+    f = PyUFunc_FromFuncAndDataAndSignatureAndIdentity(
+        hypot_functions, hypot_data, hypot_signatures, 5,
+        2, 1, PyUFunc_IdentityValue, "hypot",
+        "Given the \"legs\" of a right triangle, [etc.]", 0, NULL, identity
+    );
+    if (1) {
+        Py_DECREF(identity);
+    }
+    if (f == NULL) {
+        return -1;
+    }
+    
+    PyDict_SetItemString(dictionary, "hypot", f);
+    Py_DECREF(f);
+    identity = NULL;
+    if (0 && identity == NULL) {
+        return -1;
+    }
+```
+
+That is where the ufunc object is created with a call to the NumPy C API
+function `PyUFunc_FromFuncAndDataAndSignatureAndIdentity`.  The object
+is stored in `dictionary` with the key `"hypot"`.
+
+*To be answered:*
+
+Why is `hypot_data[4]` (corresponding to the `object` data type) set to
+the *string* `"hypot"`?  Look back at the `add` code: we see that `add`
+uses the generic loop function `PyUFunc_OO_O` for the object data type,
+and it sets the corresponding slot in its `data` array to `PyNumber_Add`:
+
+```c
+  add_functions[21] = PyUFunc_OO_O;
+  add_data[21] = (void *) PyNumber_Add;
+```
+
+Compare how `add` and `hypot` handle object arrays:
+
+```
+In [10]: import numpy as np
+In [11]: a = np.array([3.0, 1.0], dtype=object)
+In [12]: b = np.array([4.0, 2.0], dtype=object)
+In [13]: np.add(a, b)
+Out[13]: array([7.0, 3.0], dtype=object)
+In [14]: np.hypot(a, b)
+---------------------------------------------------------------------------
+AttributeError                            Traceback (most recent call last)
+<ipython-input-14-c1615fa43dea> in <module>
+----> 1 np.hypot(a, b)
+
+AttributeError: 'float' object has no attribute 'hypot'
+```
 
 More to come...
