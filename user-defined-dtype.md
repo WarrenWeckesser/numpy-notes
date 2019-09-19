@@ -9,6 +9,10 @@ Docs: https://numpy.org/devdocs/user/c-info.beyond-basics.html#user-defined-data
 Questions about defining a user-defined dtype
 ---------------------------------------------
 
+* How are the fields `kind` and `type` of the `PyArray_Descr` structure
+  actually *used* by NumPy?  It isn't clear to me how these characters should
+  be chosen for a user-defined dtype, and what the consequences of the choices
+  are.
 * Here's how the `rational` dtype defined in the file `_rational_tests.c.src`
   in `numpy/numpy/core/src/umath/` behaves when added to an integer numpy array
   with length greater than 1:
