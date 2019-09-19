@@ -14,12 +14,12 @@ Questions about defining a user-defined dtype
   structure actually *used* by NumPy?  It isn't clear to me how these characters
   should be chosen for a user-defined dtype, and what the consequences of the
   choices are.
-* The first step in creating a new dtype is to define a Python object
-  for the data type.  This involves implementing the Python number protocol
-  for the object.  When using a NumPy array with the new data type, will NumPy
-  code ever use the functions from data type's implementation of the Python
-  number protocol?  Or will NumPy only attempt to perform calculations with
-  the new data type through ufuncs?
+* The first step in creating a new dtype is to define a Python object for
+  the data type.  For a number-like dtype, this involves implementing the
+  Python number protocol for the object.  When using a NumPy array with the
+  new data type, will NumPy code ever use the functions from the data type's
+  implementation of the Python number protocol?  Or will NumPy only attempt
+  to perform calculations with the new data type through ufuncs?
 * Here's how the `rational` dtype defined in the file `_rational_tests.c.src`
   in `numpy/numpy/core/src/umath/` behaves when added to an integer numpy array
   with length greater than 1:

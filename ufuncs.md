@@ -304,7 +304,7 @@ PyUFunc_dd_d(char **args, npy_intp *dimensions, npy_intp *steps, void *func)
 Note that the fourth argument is `func`.  In the body of the function, this
 is cast to `f`, which has the type `doubleBinaryFunc` (a declaration of a C
 function that accepts two double precision inputs and returns a double
-precision value).  In the loop, the output vaues are computed by applying
+precision value).  In the loop, the output values are computed by applying
 `f` to the input values.
 
 When one of the ufunc inner loop functions is called, it is passed the
