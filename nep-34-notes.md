@@ -1,5 +1,5 @@
-An Alternative to NEP 34
-========================
+Notes for NEP 34 (and possible alternatives)
+============================================
 
 *These notes are a work in progress.  There are still API issues
 to be resolved.*
