@@ -57,7 +57,7 @@ so) to call `register_func(name, func)` to replace the functions in
 ```
 
 That means a user of the linear algebra function `inv` would probably not
-use `numpy.dual.inv`.  They would have have to import  `scipy.linalg` for
+use `numpy.dual.inv`.  They would have to import  `scipy.linalg` for
 the name in `numpy.dual` to have been replaced.  If they have to import
 `scipy.linalg` to make the switch, why wouldn't they just use `scipy.linalg`
 directly in their code instead of `numpy.dual`?  So that, apparently, is not
