@@ -8,11 +8,11 @@ that documentation of the module `numpy.dual` should also be improved.
 When I mentioned this suggestion in the community meeting on December 11,
 it was suggested that we should probably deprecate `numpy.dual`.
 
-I think quite a few current NumPy developers (myself included) are
-unfamiliar with the history and purpose of this module, so I spent a
-little time reading code and github issues.  The following are a few
-notes about `numpy.dual`.  Corrections and clarifications to
-anything written here would be appreciated!
+I think quite a few current NumPy developers (myself included at the time
+the topic came up) are unfamiliar with the history and purpose of this
+module, so I spent a little time reading code and github issues.  The
+following are a few notes about `numpy.dual`.  Corrections and clarifications
+to anything written here would be appreciated.
 
 
 What is numpy.dual?
@@ -20,8 +20,8 @@ What is numpy.dual?
 
 The documentation for numpy.dual is at [https://numpy.org/devdocs/reference/routines.dual.html](https://numpy.org/devdocs/reference/routines.dual.html).
 
-It is a namespace that exposes several linear algebra and FFT functions
-(and a lone special function, `i0`).  By default,
+It is a namespace that exposes several linear algebra and FFT functions,
+along with a lone special function, `i0`.  By default,
 these names are just aliases for NumPy's implementation of these functions.
 The module also provides the function `register_func(name, func)` (with
 no docstring and no mention in the online docs [*grumble, grumble*]) that
@@ -84,12 +84,17 @@ monkeypatch `numpy.linalg`.
 
 Issues on the NumPy github site related to `numpy.dual`
 -------------------------------------------------------
+(Some of these might make only a passing reference to `numpy.dual`.)
+
 * [numpy.dual.cholesky behaves differently than numpy.linalg.cholesky](https://github.com/numpy/numpy/issues/5649)
 * [Stochastic behaviour even after setting random.seed()](https://github.com/numpy/numpy/issues/8041)
 * [multivariate_normal not consistent between mkl and nomkl numpy](https://github.com/numpy/numpy/issues/13358)
 * [Deterministic (up to numerical error) multivariate_normal sampling](https://github.com/numpy/numpy/issues/13386)
 * [ENH: Multivariate normal speedups](https://github.com/numpy/numpy/pull/14197)
 * [numpy.linalg.eig crashes on Mandriva/OpenSuse for some matrices (Trac #1211)](https://github.com/numpy/numpy/issues/1809)
+  (An old issue where numpy.dual was only indirectly involved, but
+  probably caused some confusion when the behavior of numpy was changed
+  after importing `scipy.linalg`)
 
 
 How is `numpy.dual` used in SciPy?
