@@ -2,17 +2,17 @@
 ============
 
 In response to some work on
-[improving the information about `numpy.linalg`](https://github.com/numpy/numpy/pull/14988),
+[improving the documentation of `numpy.linalg`](https://github.com/numpy/numpy/pull/14988),
 and how it compares to `scipy.linalg`, Kevin Sheppard suggested
 that documentation of the module `numpy.dual` should also be improved.
 When I mentioned this suggestion in the community meeting on December 11,
 it was suggested that we should probably deprecate `numpy.dual`.
 
-I think quite a few current NumPy developers (myself included at the time
-the topic came up) are unfamiliar with the history and purpose of this
-module, so I spent a little time reading code and github issues.  The
-following are a few notes about `numpy.dual`.  Corrections and clarifications
-to anything written here would be appreciated.
+I think some current NumPy developers (myself included at the time the
+topic came up) are unfamiliar with the history and purpose of this module,
+so I spent a little time reading code and github issues.  The following
+are a few notes about `numpy.dual`.  Corrections and clarifications to
+anything written here would be appreciated.
 
 
 What is numpy.dual?
