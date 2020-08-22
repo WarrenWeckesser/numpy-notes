@@ -67,13 +67,10 @@ typedef enum {
 Question: How does the code know when a casting is "safe"? Presumably
 this is the casting table and the "can cast" information.  How does
 casting take place "within the same kind" for types that wouldn't
-necessarily be considered "safe" for casting?  Same question for
-when the types are not within the same kind: if the casting is
-set to NPY_UNSAFE_CASTING, how does the code actually *do* the
-casting?
-
-Question: What does "the same kind" mean?  How is the "kind" of
-a data type stored?
+necessarily be considered "safe" for casting?  (See below for some
+brief notes about `kind`.)  Same question for when the types are not
+within the same kind: if the casting is set to NPY_UNSAFE_CASTING,
+how does the code actually *do* the casting?
 
 
 *Parameters*
@@ -243,3 +240,38 @@ TypeError                                 Traceback (most recent call last)
 
 TypeError: ufunc 'logfactorial' not supported for the input types, and the inputs could not be safely coerced to any supported types according to the casting rule ''safe''
 ```
+
+-----
+
+The `kind` of a dtype
+=======================
+In Python, the `kind` of a NumPy dtype is available as the `kind`
+attribute; see
+
+    https://numpy.org/doc/stable/reference/generated/numpy.dtype.kind.html
+
+For example, all the signed integer dtypes have `kind` `'i'`:
+
+    >>> a = np.array([-100, 0, 100, 200, 500, 8000], dtype=np.int32)
+    >>> a.dtype
+    dtype('int32')
+    >>> a.dtype.kind
+    'i'
+
+By default, the `astype` method allows unsafe casting, so we can do:
+
+    >>> a.astype(np.int8)
+    array([-100,    0,  100,  -56,  -12,   64], dtype=int8)
+
+If we specify safe casting, we get an error:
+
+    >>> a.astype(np.int8, casting="safe")
+    Traceback (most recent call last):
+      File "<stdin>", line 1, in <module>
+    TypeError: Cannot cast array data from dtype('int32') to dtype('int8') according to the rule 'safe'
+
+Because the dtypes associated with `int8` and `int32` have the same
+`kind`, we can (unsafely!) cast `a` to `int8`:
+
+    >>> a.astype(np.int8, casting="same_kind")
+    array([-100,    0,  100,  -56,  -12,   64], dtype=int8)
