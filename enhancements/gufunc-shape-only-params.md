@@ -13,7 +13,7 @@ Instead of passing an array, one passes a shape tuple.
 The current gufunc signature allows for functions that operate on given
 arrays.  It does not provide a means for generating output whose shape
 exceeds the (broadcast) shapes of the input arrays.  This means there
-is no way that functions such as `linspace`, `geomspace` or `convolve1d`
+is no way that functions such as `linspace`, `geomspace` or `bincount`
 can be implemented as gufuncs.
 
 Signature change
