@@ -13,8 +13,8 @@ Instead of passing an array, one passes a shape tuple.
 The current gufunc signature allows for functions that operate on given
 arrays.  It does not provide a means for generating output whose shape
 exceeds the (broadcast) shapes of the input arrays.  This means there
-is no way that functions such as `linspace` and `geomspace` can be
-implemented as gufuncs.
+is no way that functions such as `linspace`, `geomspace` or `convolve1d`
+can be implemented as gufuncs.
 
 Signature change
 ----------------
@@ -29,9 +29,9 @@ be `(),(),<n> -> (n)`.
 
 Numerical literals are not accepted in the signature that defines a
 shape-only parameter.  (Cf. the signature for array parameters, where
-a signature such as `(3)` is allowed.)
+a signature such as `(n,3)` is allowed.)
 
-The identifiers with the signature of a shape-only parameter must be
+The identifiers within the signature of a shape-only parameter must be
 distinct, and not the same as any other identifiers used in other input
 array or shape-only parameters.  For example, the following are not
 allowed:
@@ -39,7 +39,9 @@ allowed:
     (m),<n>,<n> -> (m,n)  # Error: can't use n twice in the input.
     (m),<m,n> -> (m,n)    # Error: can't use m twice in the input.
 
-Shape-only parameters are not accepted in the output part of signature.
+Shape-only parameters are not accepted in the output part of the
+signature.
+
 Identifiers within shape-only input parameters are allowed in the
 output shape parameters; indeed, that is their primary reason to exist.
 
@@ -85,7 +87,7 @@ contains shape-only parameters is that those parameters do not show up
 in the `args` array.  They *do* affect the `dimensions` and `steps`
 arrays.
 
-Consider the `linspace` example, with signature `(),(),<n>->(n)`.
+Consider the `linspace` example, with signature `(),(),<n> -> (n)`.
 There is one core dimension, `n`.
 
 In a call such as
@@ -138,8 +140,8 @@ Examples
 
 * `bincount(x, m)`, with gufunc signature `(n),<m> -> (m)`.  `m` is one
   more than the maximum value in the input array that should be counted.
-  The is, the elements of the output array are the counts of the occurences
-  of the values [0, 1, 2, ..., m-1].
+  That is, the elements of the output array are the counts of the
+  occurrences of the values [0, 1, 2, ..., m-1].
 
   For example, `bincount([0, 2, 8, 2, 2, 8, 3, 8, 8], 10)` returns
   `[1, 0, 3, 1, 0, 0, 0, 0, 4, 0]`.  `m` is like `minlength` of
