@@ -12,7 +12,7 @@ Wish list for NumPy gufuncs
   example, that a certain core dimension is at least 1.  Currently, I have
   implemented this as a check in the loop functions; see, for example,
 
-      https://github.com/WarrenWeckesser/ufunclab/blob/main/src/means/means_gufunc.c.src)
+      https://github.com/WarrenWeckesser/ufunclab/blob/main/src/means/means_gufunc.c.src
 
   It would be better if the gufunc machinery provided a way for this to be
   checked by the gufunc object, after it checks the shapes for broadcast
