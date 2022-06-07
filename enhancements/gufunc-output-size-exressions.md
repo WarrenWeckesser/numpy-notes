@@ -75,3 +75,7 @@ At a minimum, the allowed operators would be:
 When the gufunc is created, the expressions are parsed and compiled into
 stack-oriented byte-code.  When a gufunc with expressions is called, the
 byte-code is evaluated using the given array sizes as inputs.
+An experiment for parsing and evaluating such expressions is in the
+[c/gufunc-out-expr](https://github.com/WarrenWeckesser/experiments/tree/master/c/gufunc-out-expr)
+directory of my [experiments](https://github.com/WarrenWeckesser/experiments)
+repository.
