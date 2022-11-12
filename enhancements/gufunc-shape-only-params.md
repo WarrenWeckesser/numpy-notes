@@ -58,7 +58,7 @@ length 1 containing the integer.  The tuple given by a user must
 have at least as many elements as specified in the signature.
 
 The shape-only signature may be empty angle brackets, `<>`. In this
-case, the gufunc will accept an emtpy tuple `()` as an input, and all
+case, the gufunc will accept an empty tuple `()` as an input, and all
 the values in a non-empty tuple take part in broadcasting.
 
 `None` is not accepted as the value of a shape-only parameter.
