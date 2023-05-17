@@ -148,6 +148,15 @@ Examples
   `numpy.bincount`, but in the gufunc version, the output always has
   size `m`; values in the input array that are greater than m-1 are ignored.
 
+* `top_k(a, k)` with gufunc signature `(n),<k> -> (k)` returns the "top"
+  `k` elements of `a`, and `argtop_k` returns the indices of those elements.
+
+  For consistency with the sorting and partitioning functions in NumPy,
+  "top k" should probably mean the first `k` elements of the sorted data.
+  Alternatively, the functions `max_k`, `min_k`, `argmax_k` and  `argmin_k`
+  could be defined. Or `max`, `min`, `argmax` and `argmin` could be extended
+  to have a parameter that corresponds to `k`, with a default value of 1.
+
 * Random variate generation.  In this case, the signature of the shape-only
   `size` parameter is `<>`, which means the user would pass `size=()` to
   generate a single variate, and `size=(n,)` (or `size=n`) to generate `n`
