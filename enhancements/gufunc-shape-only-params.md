@@ -40,12 +40,21 @@ allowed:
     (m),<m,n> -> (m,n)    # Error: can't use m twice in the input.
 
 Shape-only parameters are not accepted in the output part of the
-signature.
+signature (e.g. `(m) -> <n>` is not allowed).
 
 Identifiers within shape-only input parameters are allowed in the
 output shape parameters; indeed, that is their primary reason to exist.
 
-Shape-only signatures do not accept the `?` modifier.
+The `?` modifier can be used with shape-only parameters.  A simple example
+where this could be useful is in a gufunc implementation of ``max`` that
+extends the "obvious" function ``max(a)``, with gufunc signature ``(m)->()``,
+to include the parameter ``n``, allowing the function to implement the "top n"
+function that some libraries provide. (It is more commonly called "top k".)
+The gufunc signature of ``max(a, n)`` is then ``(m),<n?> -> (n?)``.   This
+allows the user to write ``max(a, ())`` to get the behavior of the standard
+``max`` function.  This API would be *much* better if the gufunc parameters
+behaved like those of a function defined with ``def``, so a default value
+could be given.  Then the (effective) signature would be ``max(a, n=())``.
 
 
 gufunc user API
@@ -148,14 +157,19 @@ Examples
   `numpy.bincount`, but in the gufunc version, the output always has
   size `m`; values in the input array that are greater than m-1 are ignored.
 
-* `top_k(a, k)` with gufunc signature `(n),<k> -> (k)` returns the "top"
-  `k` elements of `a`, and `argtop_k` returns the indices of those elements.
+* `top_n(a, n)` with gufunc signature `(m),<n> -> (n)` returns the "top"
+  `n` elements of `a`, and `argtop_n` returns the indices of those elements.
 
   For consistency with the sorting and partitioning functions in NumPy,
-  "top k" should probably mean the first `k` elements of the sorted data.
-  Alternatively, the functions `max_k`, `min_k`, `argmax_k` and  `argmin_k`
-  could be defined. Or `max`, `min`, `argmax` and `argmin` could be extended
-  to have a parameter that corresponds to `k`, with a default value of 1.
+  "top n" should probably mean the first `n` elements of the sorted data
+  (although the values would not necessarily be sorted).
+
+  Alternatively, the functions `max_n`, `min_n`, `argmax_n` and  `argmin_n`
+  could be defined. Or even better, gufunc implementations of `max`, `min`,
+  `argmax` and `argmin` could be extended to have a shape-only parameter
+  that corresponds to `n`, with the the shape-only signature `<n?>`.  This
+  last idea would especially nice if the gufunc machinery was extended
+  to allow default values to be specified.
 
 * Random variate generation.  In this case, the signature of the shape-only
   `size` parameter is `<>`, which means the user would pass `size=()` to
