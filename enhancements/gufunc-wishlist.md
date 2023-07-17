@@ -3,7 +3,7 @@ Wish list for NumPy gufuncs
 
 * Shape-only parameters; see gufunc-shape-only-params.md.
 
-* Expressions for output array sizes; see gufunc-output-size-exressions.md.
+* Expressions for array sizes in the shape signature; see gufunc-size-exressions.md.
 
 * Allow gufunc parameters to be keyword arguments with configurable names
   and with the option for default values.
