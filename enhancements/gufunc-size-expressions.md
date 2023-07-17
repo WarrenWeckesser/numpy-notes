@@ -54,7 +54,7 @@ In these first examples, only the output shapes use expressions.
       (m),<n> -> (m - n)
 
 In general, it should be possible for *input* shapes to include
-exressions, as long as each symbol used in the shape occurs at least
+expressions, as long as each symbol used in the shape occurs at least
 once as a singleton expression in one of the input dimensions.  So
 something like `(n, n+2) -> (n+1)` would be allowed, but not
 `(n-1),(n+1) -> n`.
