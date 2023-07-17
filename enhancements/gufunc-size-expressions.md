@@ -3,8 +3,8 @@ NumPy enhancement: size expressions in gufunc signatures
 
 *Proposal*
 
-Allow the dimensions in the output of a gufunc signature to be
-functions of the dimensions of the input parameters.
+Allow some of the dimensions in the shape signature of a gufunc to
+be functions of other dimensions in the signature.
 
 *Why?*
 
@@ -15,6 +15,8 @@ The simplest way to introduce this proposal is with examples.
 
 Examples
 --------
+
+In these first examples, only the output shapes use expressions.
 
 * Compute all pairwise distances of a set of `n` vectors, each having
   length `d`:
@@ -51,21 +53,33 @@ Examples
 
       (m),<n> -> (m - n)
 
+In general, it should be possible for *input* shapes to include
+exressions, as long as each symbol used in the shape occurs at least
+once as a singleton expression in one of the input dimensions.  So
+something like `(n, n+2) -> (n+1)` would be allowed, but not
+`(n-1),(n+1) -> n`.
+
+Currently I have just one example of the general case:
+
+* A boolean test for an `n`-dimensional point being within a
+  simplex defined by `n+1` points.  The shape signature would be
+
+      (n), (n+1, n) -> ()
 
 Implementation
 --------------
-
-Just ideas at the moment...
 
 The allowed expressions are relatively simple.  They are *not*
 arbitrary Python expressions.  Note that the operands are always
 nonnegative integers, and expressions must always result in
 nonnegative integers.
 
-Expressions may contain literal integers and identifiers from
-the left side of the gufunc signature.
+Expressions may contain literal integers and identifiers.
 
-At a minimum, the allowed operators would be:
+Each identifier must occur at least once as a singleton expression
+in a dimension of the input shape.
+
+At a minimum, the allowed operators in an expression would be:
 
 * Infix integer arithmetic: `+`, `-`, `*`, `//`, `**`
 * Predefined functions: `max`, `min`
@@ -73,8 +87,10 @@ At a minimum, the allowed operators would be:
   or `cond ? value : other` in C.
 
 When the gufunc is created, the expressions are parsed and compiled into
-stack-oriented byte-code.  When a gufunc with expressions is called, the
-byte-code is evaluated using the given array sizes as inputs.
+stack-oriented byte-code (not necessarily Python byte code).  When a
+gufunc with expressions is called, the byte-code is evaluated using the
+given array sizes as inputs.
+
 An experiment for parsing and evaluating such expressions is in the
 [c/gufunc-out-expr](https://github.com/WarrenWeckesser/experiments/tree/master/c/gufunc-out-expr)
 directory of my [experiments](https://github.com/WarrenWeckesser/experiments)
