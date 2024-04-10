@@ -25,7 +25,7 @@ Wish list for NumPy gufuncs
 * Add a `__dict__` attribute to the ufunc object, so in Python one can assign
   attributes to the object (just like Python function objects).  This would
   allow a gufunc such as `ufunclab.first` to store the predefined symbols
-  `LT`, `LE`, etc on the gufunc object instead of in a seperate object in the
+  `LT`, `LE`, etc on the gufunc object instead of in a separate object in the
   `ufunclab` namespace.  That is, instead of
 
       >>> from ufunclab import first, op
