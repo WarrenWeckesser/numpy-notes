@@ -171,6 +171,17 @@ Examples
   last idea would especially nice if the gufunc machinery was extended
   to allow default values to be specified.
 
+* `one_hot(idx, length)` with gufunc signature `(),<n> -> (n)` generates
+  a one-dimensional "one hot" array: the value at `idx` is 1 and all other
+  values are 0.
+
+      >>> one_hot(2, 7)
+      array([0, 0, 1, 0, 0, 0, 0])
+      >>> one_hot([4, 2, 5], 7)
+      array([[0, 0, 0, 0, 1, 0, 0],
+             [0, 0, 1, 0, 0, 0, 0],
+             [0, 0, 0, 0, 0, 1, 0]])
+
 * Random variate generation.  In this case, the signature of the shape-only
   `size` parameter is `<>`, which means the user would pass `size=()` to
   generate a single variate, and `size=(n,)` (or `size=n`) to generate `n`
