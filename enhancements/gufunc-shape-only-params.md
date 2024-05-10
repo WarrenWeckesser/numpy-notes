@@ -167,8 +167,8 @@ Examples
   Alternatively, the functions `max_n`, `min_n`, `argmax_n` and  `argmin_n`
   could be defined. Or even better, gufunc implementations of `max`, `min`,
   `argmax` and `argmin` could be extended to have a shape-only parameter
-  that corresponds to `n`, with the the shape-only signature `<n?>`.  This
-  last idea would especially nice if the gufunc machinery was extended
+  that corresponds to `n`, with the shape-only signature `<n?>`.  This
+  last idea would be especially nice if the gufunc machinery was extended
   to allow default values to be specified.
 
 * `one_hot(idx, length)` with gufunc signature `(),<n> -> (n)` generates
@@ -182,7 +182,7 @@ Examples
              [0, 0, 1, 0, 0, 0, 0],
              [0, 0, 0, 0, 0, 1, 0]])
 
-* Random variate generation.  In this case, the signature of the shape-only
+* Random variate generation.  Generally the signature of the shape-only
   `size` parameter is `<>`, which means the user would pass `size=()` to
   generate a single variate, and `size=(n,)` (or `size=n`) to generate `n`
   variates.  Whatever is given, it must be consistent with the shapes
@@ -196,3 +196,20 @@ Examples
       multivariate_hypergeometric(
           colors, nsample, size)            (m),(),<> -> (m)
       dirichlet(alpha, size)                (m),<> -> (m)
+      ortho_group(m, size)                  <m>, <> -> (m, m)
+      select_int(length, m, size)           (), <m> -> (m)
+      select(items, m, size)                (n), <m>, () -> (m)
+
+  * `ortho_group(m, size)` refers to a function that generates random
+    orthogonal matrices with shape `(m, m)` (c.f.
+    `scipy.stats.ortho_group.rvs()`).
+  * `select_int(length, m, size)` randomly selects without replacement
+    `m` integers from the sequence `range(length)`.
+  * `select(items, m, size)` selects `m` elements from `items` without
+    replacement.
+
+Questions
+---------
+* The shape-only signature of each example considered so far is either
+  `<m>` or `<>`.  Are there useful cases where the signature has two
+  or more lengths?
