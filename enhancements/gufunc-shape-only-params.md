@@ -197,16 +197,17 @@ Examples
           colors, nsample, size)            (m),(),<> -> (m)
       dirichlet(alpha, size)                (m),<> -> (m)
       ortho_group(m, size)                  <m>, <> -> (m, m)
-      select_int(length, m, size)           (), <m> -> (m)
-      select(items, m, size)                (n), <m>, () -> (m)
+      select_int(length, m, size)           (), <m>, <> -> (m)
+      select(items, m, size)                (n), <m>, <> -> (m)
 
   * `ortho_group(m, size)` refers to a function that generates random
     orthogonal matrices with shape `(m, m)` (c.f.
     `scipy.stats.ortho_group.rvs()`).
   * `select_int(length, m, size)` randomly selects without replacement
-    `m` integers from the sequence `range(length)`.
+    `m` integers from the sequence `range(length)`. `m` must not be
+    greater than `length`.
   * `select(items, m, size)` selects `m` elements from `items` without
-    replacement.
+    replacement.  `m` must not be greater than `n`.
 
 Questions
 ---------
