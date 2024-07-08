@@ -81,7 +81,7 @@ in a dimension of the input shape.
 
 At a minimum, the allowed operators in an expression would be:
 
-* Infix integer arithmetic: `+`, `-`, `*`, `//`, `**`
+* Infix integer arithmetic: `+`, `-`, `*`, `//`, `%`, `**`
 * Predefined functions: `abs`, `max`, `min`
 * Maybe a ternary operator, like `value if cond else other` in Python
   or `cond ? value : other` in C.
