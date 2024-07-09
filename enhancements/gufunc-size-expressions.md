@@ -1,3 +1,12 @@
+*** UPDATE ***
+While the capability proposed here is useful, the implementations details
+(allowing *expressions* in the gufunc shape signature) is more complicated
+than necessary. A user-defined function attached to the PyUFuncObject
+that the gufunc author writes and that is passed the appropriate information
+for the user to process is much simpler.  So everything after the "Examples"
+section of this note can be ignored.
+
+
 NumPy enhancement: size expressions in gufunc signatures
 ========================================================
 
