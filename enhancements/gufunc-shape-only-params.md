@@ -123,6 +123,48 @@ would look like this:
     steps[2] = 8*5  # Outer loop `out` stride
     steps[3] = 8    # Inner stride for the `out` array
 
+Alernatives
+-----------
+
+In some cases, an alternative to achieve a similar functionality is to make
+the core dimensions of the output independent of the input core dimensions.
+Then the shape of the `out` parameter determines the "shape only" parameter.
+
+For example, the (simplified) `linspace` gufunc could be implemented with
+shape signature `(),()->(n)`, and the code would fill in the output parameter
+provded by the user based on its core dimension `n`.
+
+The obvious drawback with the method is that the user must provide the `out`
+parameter.  If they want to use broadcasting, they must create `out` with
+the correct shape to match the desired broadcast shape.
+
+An example of the alternative method is the implementation of the functions
+`nextn_less` and `nextn_greater` in `ufunclab`.  These functions have shape
+signature `()->(n)`.  They compute the next `n` less or greater values of a
+given floating point value `x`.  To use them, the user must create the output
+array (with the appropriate data type) and pass it to the function, e.g.
+
+```
+>>> import numpy as np
+>>> from ufunclab import nextn_greater
+
+>>> x = np.float32(2.5)
+>>> xn = np.zero(5, dtype=x.dtype)  # Get the next 5 greater values.
+>>> nextn_greater(x, out=xn)
+array([2.5000002, 2.5000005, 2.5000007, 2.500001 , 2.5000012],
+      dtype=float32)
+```
+
+With a shape-only parameter, this function would have the shape signature
+`(),<n>->(n)`. In that case, the code is much simpler:
+
+```
+>>> x = np.float32(2.5)
+>>> nextn_greater(x, 5)
+array([2.5000002, 2.5000005, 2.5000007, 2.500001 , 2.5000012],
+      dtype=float32)
+```
+
 Examples
 --------
 
@@ -181,6 +223,10 @@ Examples
       array([[0, 0, 0, 0, 1, 0, 0],
              [0, 0, 1, 0, 0, 0, 0],
              [0, 0, 0, 0, 0, 1, 0]])
+
+* As described in the "Alternatives" section above, the gufuncs `nextn_less`
+  and `nextn_greater`, with shape signatures `(),<n> -> (n)` compute the next `n`
+  values less or greater than, respectively, the given floating point scalar `x`.
 
 * Random variate generation.  Generally the signature of the shape-only
   `size` parameter is `<>`, which means the user would pass `size=()` to
