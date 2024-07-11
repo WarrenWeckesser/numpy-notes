@@ -123,8 +123,8 @@ would look like this:
     steps[2] = 8*5  # Outer loop `out` stride
     steps[3] = 8    # Inner stride for the `out` array
 
-Alernatives
------------
+Alternatives
+------------
 
 In some cases, an alternative to achieve a similar functionality is to make
 the core dimensions of the output independent of the input core dimensions.
