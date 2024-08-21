@@ -3,8 +3,8 @@ Wish list for NumPy gufuncs
 
 * Shape-only parameters; see gufunc-shape-only-params.md.
 
-* **Done!**  See https://github.com/numpy/numpy/pull/26908. The approach is not
-  as originally envisioned, but it ended up simpler and better.
+* **Done!**  *See https://github.com/numpy/numpy/pull/26908. The approach is not
+  as originally envisioned, but it ended up simpler and better.*
 
   Expressions for array sizes in the shape signature; see gufunc-size-exressions.md.</strike>
   See "Updates" below.
@@ -12,7 +12,7 @@ Wish list for NumPy gufuncs
 * Allow gufunc parameters to be keyword arguments with configurable names
   and with the option for default values.
 
-* **Done!** See https://github.com/numpy/numpy/pull/26908.
+* **Done!** *See https://github.com/numpy/numpy/pull/26908.*
 
   Provide an additional shape validation hook, so a gufunc can require, for
   example, that a certain core dimension is at least 1.  Currently, I have
