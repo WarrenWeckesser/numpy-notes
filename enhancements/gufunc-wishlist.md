@@ -6,8 +6,7 @@ Wish list for NumPy gufuncs
 * **Done!**  *See https://github.com/numpy/numpy/pull/26908. The approach is not
   as originally envisioned, but it ended up simpler and better.*
 
-  Expressions for array sizes in the shape signature; see gufunc-size-exressions.md.</strike>
-  See "Updates" below.
+  Expressions for array sizes in the shape signature; see gufunc-size-exressions.md.
 
 * Allow gufunc parameters to be keyword arguments with configurable names
   and with the option for default values.
