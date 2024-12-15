@@ -138,32 +138,48 @@ The obvious drawback with the method is that the user must provide the `out`
 parameter.  If they want to use broadcasting, they must create `out` with
 the correct shape to match the desired broadcast shape.
 
-An example of the alternative method is the implementation of the functions
-`nextn_less` and `nextn_greater` in `ufunclab`.  These functions have shape
-signature `()->(n)`.  They compute the next `n` less or greater values of a
-given floating point value `x`.  To use them, the user must create the output
-array (with the appropriate data type) and pass it to the function, e.g.
+To avoid that drawback, a Python wrapper function for the gufunc that takes
+the shape and converts it to an `out` parameter to be passed to the gufunc
+can be implemented.  Examples of this approach are the functions `bincount`,
+`nextn_greater`, `nextn_less`, `convert_to_base` and `one_hot` in ufunclab.
+These are Python functions that wrap gufuncs.  The gufunc is available as the
+`gufunc` attribute of the Python function.  For example, `nextn_greater`
+has signature `nextn_greater(x, n, out=None, axis=-1)`.  It calls the underlying
+gufunc `nextn_greater.gufunc`, which has shape signature `()->(n)`.
+
+For example,
 
 ```
->>> import numpy as np
->>> from ufunclab import nextn_greater
+In [18]: from ufunclab import nextn_greater
 
->>> x = np.float32(2.5)
->>> xn = np.zero(5, dtype=x.dtype)  # Get the next 5 greater values.
->>> nextn_greater(x, out=xn)
-array([2.5000002, 2.5000005, 2.5000007, 2.500001 , 2.5000012],
-      dtype=float32)
+In [19]: nextn_greater(1.25, 5).tolist()  # Use .tolist() to display with full precision.
+Out[19]: 
+[1.2500000000000002,
+ 1.2500000000000004,
+ 1.2500000000000007,
+ 1.2500000000000009,
+ 1.250000000000001]
+
+In [20]: nextn_greater.gufunc
+Out[20]: <ufunc 'nextn_greater'>
+
+In [21]: nextn_greater.gufunc.signature
+Out[21]: '()->(n)'
+
+In [22]: out = np.zeros(5)
+
+In [23]: nextn_greater.gufunc(1.25, out=out)
+Out[23]: array([1.25, 1.25, 1.25, 1.25, 1.25])
+
+In [24]: out.tolist()
+Out[24]: 
+[1.2500000000000002,
+ 1.2500000000000004,
+ 1.2500000000000007,
+ 1.2500000000000009,
+ 1.250000000000001]
 ```
 
-With a shape-only parameter, this function would have the shape signature
-`(),<n>->(n)`. In that case, the code is much simpler:
-
-```
->>> x = np.float32(2.5)
->>> nextn_greater(x, 5)
-array([2.5000002, 2.5000005, 2.5000007, 2.500001 , 2.5000012],
-      dtype=float32)
-```
 
 Examples
 --------
