@@ -132,7 +132,7 @@ Then the shape of the `out` parameter determines the "shape only" parameter.
 
 For example, the (simplified) `linspace` gufunc could be implemented with
 shape signature `(),()->(n)`, and the code would fill in the output parameter
-provded by the user based on its core dimension `n`.
+provided by the user based on its core dimension `n`.
 
 The obvious drawback with the method is that the user must provide the `out`
 parameter.  If they want to use broadcasting, they must create `out` with
