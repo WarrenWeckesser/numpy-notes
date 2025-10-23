@@ -7,7 +7,7 @@ ufuncs.  When I write `ufunc` (i.e. with the backticks), I am referring to the
 NumPy object; ufuncs and gufuncs are instances of the class `ufunc` (and that
 is probably the source of several documentation and API warts).
 
-Quirls, warts, etc.
+Quirks, warts, etc.
 -------------------
 * All `ufunc` instances (ufuncs and gufuncs) have the `outer` method,
   but it raises an exception unless the object is an elementwise ufunc
