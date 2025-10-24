@@ -1,6 +1,6 @@
 
 Over the years, the following have been suggested as candidates for implementing
-as a gufunc, perhaps with an Python wrapper for backwards compatbility and a nicer
+as a gufunc, perhaps with a Python wrapper for backwards compatbility and a nicer
 user API.  (Note: this list is a snapshot from a search--not necessarily thorough--of
 github issues as of October 2025.)
 
